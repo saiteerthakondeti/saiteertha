@@ -1,0 +1,498 @@
+Assignment: Python Programming for DL
+Name: SaiTeerthaKondeti
+Register Number:192325131
+Department:AIML
+Date of Submission:17/07/2024
+
+
+
+PROBLEM 1: Real-Time Weather Monitoring System 
+Scenario: 
+You are developing a real-time weather monitoring system for a weather forecasting company. The system needs to fetch and display weather data for a specified location. 
+Tasks: 
+Model the data flow for fetching weather information from an external API and displaying it to the user. 
+Implement a Python application that integrates with a weather API (e.g., OpenWeatherMap) to fetch real-time weather data. 
+Display the current weather information, including temperature, weather conditions, humidity, and wind speed. 
+Allow users to input the location (city name or coordinates) and display the corresponding weather data. 
+Deliverables: 
+Data flow diagram illustrating the interaction between the application and the API. 
+Pseudocode and implementation of the weather monitoring system. 
+Documentation of the API integration and the methods used to fetch and display weather data. 
+Explanation of any assumptions made and potential improvements. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solution:
+Real-Time Weather Monitoring System
+1.Data Flow Diagram
+
+                                      +---------------+
+                                      |  User Input  |
+                                      +---------------+
+                                             |
+                                             |  Location
+                                             v
+                                      +--------------------|
+                                      |  Fetch Weather  |
+                                      |  Data from API  |
+                                      +---------------+
+                                             |
+                                             |  Weather Data
+                                             v
+                                      +---------------+
+                                      |  Display Weather  |
+                                      |  Information to  |
+                                      |  User            |
+                                      +---------------+
+
+
+2. Implementation:
+import requests, json
+api_key = "4d7e5f5e394f63d86d138dfbe2397f52"
+base_url = "http://api.openweathermap.org/data/2.5/weather?"
+city_name = input("Enter city name : ")
+complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+response = requests.get(complete_url)
+x = response.json()
+if x["cod"] != "404":
+    y = x["main"]
+    current_temperature = y["temp"]
+    current_pressure = y["pressure"]
+    current_humidity = y["humidity"]
+    z = x["weather"]
+    weather_description = z[0]["description"]
+    print(" Temperature (in kelvin unit) = " +
+    str(current_temperature) +
+    "\n atmospheric pressure (in hPa unit) = " +
+    str(current_pressure) +
+    "\n humidity (in percentage) = " +
+    str(current_humidity) +
+    "\n description = " +
+    str(weather_description))
+else:
+    print(" City Not Found ")
+
+
+
+
+
+
+
+
+3.Display the Current weather information
+ enter the city: Kurnool
+ Temperature (in kelvin unit) = 304.42
+ atmospheric pressure (in hPa unit) = 1002
+ humidity (in percentage) = 53
+ description = overcast clouds
+
+4.User Input
+
+
+
+PROBLEM 2: Inventory Management System Optimization
+Scenario:
+You have been hired by a retail company to optimize their inventory management system. The
+company wants to minimize stockouts and overstock situations while maximizing inventory
+turnover and profitability.
+Tasks:
+1. Model the inventory system: Define the structure of the inventory system, including
+products, warehouses, and current stock levels.
+2. Implement an inventory tracking application: Develop a Python application that tracks
+inventory levels in real-time and alerts when stock levels fall below a certain threshold.
+3. Optimize inventory ordering: Implement algorithms to calculate optimal reorder points
+and quantities based on historical sales data, lead times, and demand forecasts.
+4. Generate reports: Provide reports on inventory turnover rates, stockout occurrences,
+and cost implications of overstock situations.
+5. User interaction: Allow users to input product IDs or names to view current stock levels,
+reorder recommendations, and historical data.
+
+
+Deliverables:
+• Data Flow Diagram: Illustrate how data flows within the inventory management system,
+from input (e.g., sales data, inventory adjustments) to output (e.g., reorder alerts,
+reports).
+• Pseudocode and Implementation: Provide pseudocode and actual code demonstrating
+how inventory levels are tracked, reorder points are calculated, and reports are
+generated.
+• Documentation: Explain the algorithms used for reorder optimization, how historical
+data influences decisions, and any assumptions made (e.g., constant lead times).
+• User Interface: Develop a user-friendly interface for accessing inventory information,
+viewing reports, and receiving alerts.
+• Assumptions and Improvements: Discuss assumptions about demand patterns, supplier
+reliability, and potential improvements for the inventory management system's
+efficiency and accuracy.
+
+Solution:
+INVENTORY MANAGEMENT SYSTEM OPTIMIZATION:
+1.DATA FLOW DIAGRAM:
++---------------+     +-------------------+
+|   User Input  |     |   Inventory API    |
++---------------+     +-------------------+
+       |                      |
+       |  User requests       |
+       |  inventory updates    |  Inventory data
+       |  and reorder options   |
+       v                      v
++---------------+     +-------------------+
+| Inventory App |     |     Database       |
++---------------+     +-------------------+
+       |                      |
+       |  Fetch inventory data |  Store inventory data
+       |  and reorder info      |
+       v                      v
++---------------+     +-------------------+
+|  User Output  |     |   Notification     |
++---------------+     +-------------------+
+
+
+
+2. Implementation:
+import json
+
+
+available_products = {
+    1001: {
+        "name": "avocado",
+        "price": 230,
+        "category": "grocery",
+        "quantity": 10,
+        "date": "10/03/2021"
+    },
+    1002: {
+        "name": "lotion",
+        "price": 250,
+        "category": "beauty & personal",
+        "quantity": 100,
+        "date": "15/07/2021"
+    },
+    1003: {
+        "name": "pain reliever",
+        "price": 500,
+        "category": "health",
+        "quantity": 200,
+        "date": "12/04/2021"
+    },
+    1004: {
+        "name": "dry pasta",
+        "price": 20,
+        "category": "grocery",
+        "quantity": 50,
+        "date": "27/06/2021"
+    },
+    1005: {
+        "name": "toothbrush",
+        "price": 70,
+        "category": "beauty & personal",
+        "quantity": 1,
+        "date": "30/01/2021"
+    },
+    1006: {
+        "name": "halloween candy",
+        "price": 33,
+        "category": "grocery",
+        "quantity": 56,
+        "date": "22/02/2021"
+    },
+    1007: {
+        "name": "mascara",
+        "price": 765,
+        "category": "beauty & personal",
+        "quantity": 70,
+        "date": "11/03/2021"
+    },
+    1008: {
+        "name": "capsicum",
+        "price": 764,
+        "category": "grocery",
+        "quantity": 90,
+        "date": "16/02/2021"
+    },
+    1009: {
+        "name": "blush",
+        "price": 87,
+        "category": "beauty & personal",
+        "quantity": 50,
+        "date": "17/07/2021"
+    },
+    1010: {
+        "name": "granola bars",
+        "price": 24,
+        "category": "grocery",
+        "quantity": 60,
+        "date": "20/05/2021"
+    },
+}
+
+
+# Convert the dictionary to a JSON string
+js = json.dumps(available_products, indent=4)
+
+
+# Write the JSON string to a file
+with open("data.json", 'w') as fd:
+    fd.write(js)
+
+
+# Print the JSON string
+print(js)
+
+
+
+
+
+
+Sample Output / Screen Shots 
+
+
+
+
+
+
+
+
+
+
+
+PROBLEM 3: Real-Time Traffic Monitoring System
+Scenario:
+You are working on a project to develop a real-time traffic monitoring system for a smart city
+initiative. The system should provide real-time traffic updates and suggest alternative routes.
+Tasks:
+1. Model the data flow for fetching real-time traffic information from an external API
+and displaying it to the user.
+2. Implement a Python application that integrates with a traffic monitoring API (e.g.,
+Google Maps Traffic API) to fetch real-time traffic data.
+3. Display current traffic conditions, estimated travel time, and any incidents or delays.
+4. Allow users to input a starting point and destination to receive traffic updates and
+alternative routes.
+Deliverables:
+• Data flow diagram illustrating the interaction between the application and the API.
+• Pseudocode and implementation of the traffic monitoring system.
+• Documentation of the API integration and the methods used to fetch and display traffic
+data.
+• Explanation of any assumptions made and potential improvements.
+
+
+
+Solution:
+REAL-TIME TRAFFIC MONITORING SYSTEM
+1.DATA FLOW:
+
+Here is a data flow diagram illustrating the interaction between the traffic monitoring application and the external traffic API:
+text
++---------------+     +---------------+
+|   User Input  |     |   Traffic API |
++---------------+     +---------------+
+       |                      |
+       |  User requests       |
+       |  traffic updates     |  Traffic data
+       |  and route           |
+       v                      v
++---------------+     +---------------+
+|  Traffic App  |     |   Database    |
++---------------+     +---------------+
+       |                      |
+       |  Fetch traffic data  |  Store traffic data
+       |  and route options   |
+       v                      v
++---------------+     +---------------+
+|   User Output |     |   Notification|
++---------------+     +---------------+
+ 
+2. Implementation:
+import requests
+
+
+def fetch_traffic_info(api_key, origin, destination):
+    base_url = "https://maps.googleapis.com/maps/api/directions/json"
+    params = {
+        "key": api_key,
+        "origin": origin,
+        "destination": destination,
+        "departure_time": "now",
+        "traffic_model": "best_guess"  # or "pessimistic" for worst-case traffic
+    }
+
+
+    try:
+        response = requests.get(base_url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            # Parse the JSON response to extract relevant traffic information
+            routes = data.get('routes', [])
+            if routes:
+                route = routes[0]  # assuming first route is the best/main route
+                legs = route.get('legs', [])
+                if legs:
+                    leg = legs[0]
+                    duration_in_traffic = leg['duration_in_traffic']['text']
+                    traffic_condition = leg['traffic_speed_entry']['conditions']  # Example, check API docs for actual structure
+                    incidents = leg['traffic_speed_entry']['incidents']  # Example, check API docs for actual structure
+                    # Further process and format this data as needed
+                    return {
+                        "duration_in_traffic": duration_in_traffic,
+                        "traffic_condition": traffic_condition,
+                        "incidents": incidents
+                    }
+            else:
+                return None  # No routes found
+        else:
+            print(f"Error fetching data. Status code: {response.status_code}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        return None
+
+
+def display_traffic_info(traffic_info):
+    if traffic_info:
+        print(f"Estimated travel time: {traffic_info['duration_in_traffic']}")
+        print("Traffic conditions:")
+        for condition in traffic_info['traffic_condition']:
+            print(f"- {condition['description']}: {condition['severity']}")
+        if traffic_info['incidents']:
+            print("Incidents:")
+            for incident in traffic_info['incidents']:
+                print(f"- {incident['description']}: {incident['impact']}")
+    else:
+        print("No traffic information available.")
+
+
+def main():
+    api_key = 'your_google_maps_api_key'
+    origin = input("Enter starting point: ")
+    destination = input("Enter destination: ")
+
+
+    traffic_info = fetch_traffic_info(api_key, origin, destination)
+    display_traffic_info(traffic_info)
+
+
+if _name_ == "_main_":
+    main()
+
+
+
+Sample Output / Screen Shots 
+
+
+
+
+
+
+
+
+
+
+
+
+PROBLEM 4: Real-Time COVID-19 Statistics Tracker
+Scenario:
+You are developing a real-time COVID-19 statistics tracking application for a healthcare
+organization. The application should provide up-to-date information on COVID-19 cases,
+recoveries, and deaths for a specified region.
+Tasks:
+1. Model the data flow for fetching COVID-19 statistics from an external API and
+displaying it to the user.
+2. Implement a Python application that integrates with a COVID-19 statistics API (e.g.,
+disease.sh) to fetch real-time data.
+3. Display the current number of cases, recoveries, and deaths for a specified region.
+4. Allow users to input a region (country, state, or city) and display the corresponding
+COVID-19 statistics.
+Deliverables:
+• Data flow diagram illustrating the interaction between the application and the API.
+• Pseudocode and implementation of the COVID-19 statistics tracking application.
+• Documentation of the API integration and the methods used to fetch and display COVID-19 data.
+• Explanation of any assumptions made and potential improvements.
+Solution:
+REAL-TIME COVID-19 STATISTICS TRACKER
+1.DATA FLOW DIAGRAM
+|      User Input      |
+|   (Region Query)    |
++----------+----------+
+           |
+           v
++---------------------+
+|   Application Logic   |
+|  (Fetch Data from API)|
++----------+----------+
+           |
+           v
++---------------------+
+|   External COVID-19   |
+|     Statistics API     |
+|       (e.g., disease.sh) |
++----------+----------+
+           |
+           v
++---------------------+
+|     Display Results    |
+|  (Cases, Recoveries,   |
+|     Deaths for Region) |
++---------------------+
+
+
+Implementation:
+import requests
+
+
+def fetch_covid_stats(region):
+    url = f"https://disease.sh/v3/covid-19/all"  # This URL fetches global stats
+    if region:
+        url = f"https://disease.sh/v3/covid-19/countries/{region}"
+
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+
+        if 'country' in data:
+            print(f"COVID-19 Statistics for {data['country']}:")
+        else:            print("Global COVID-19 Statistics:")
+
+
+
+
+        print(f"Total Cases: {data['cases']}")        print(f"Total Recoveries: {data['recovered']}")
+        print(f"Total Deaths: {data['deaths']}")
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+    except KeyError:
+        print("The specified region could not be found. Please try again.")
+
+
+def main():
+    print("COVID-19 Statistics Fetcher")
+    region = input("Enter the region (country name or leave empty for global stats): ").strip()
+    fetch_covid_stats(region)
+
+
+if _name_ == "_main_":
+    main()
+
+
+
+
+
+
+
+Sample Output / Screen Shots :
+
